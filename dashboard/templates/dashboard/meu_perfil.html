@@ -1,0 +1,66 @@
+{% extends 'dashboard/base.html' %}
+{% load i18n form_tags %}
+
+{% block title %}{% trans "Meu Perfil" %} | Track My Foot{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="signup-box">
+      <h2 class="text-center">👤 {% trans "Editar Perfil" %}</h2>
+
+      {% if user.profile_photo %}
+        <div class="text-center mb-3">
+          <img src="{{ user.profile_photo.url }}" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 100px; object-fit: cover;"  alt="Foto de {{ user.username }}">
+        </div>
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="id_username" class="form-label">{% trans "Nome de usuário" %}</label>
+          {{ form.username|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_email" class="form-label">{% trans "Email" %}</label>
+          {{ form.email|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_position" class="form-label">{% trans "Posição" %}</label>
+          {{ form.position|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_gender" class="form-label">{% trans "Gênero" %}</label>
+          {{ form.gender|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_date_of_birth" class="form-label">{% trans "Data de nascimento" %}</label>
+          {{ form.date_of_birth|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_city" class="form-label">{% trans "Cidade" %}</label>
+          {{ form.city|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_state" class="form-label">{% trans "Estado" %}</label>
+          {{ form.state|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_profile_photo" class="form-label">{% trans "Foto de rosto" %}</label>
+          {{ form.profile_photo|add_class:"form-control" }}
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success">{% trans "Salvar Alterações" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

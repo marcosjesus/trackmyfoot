@@ -1,0 +1,90 @@
+
+{% extends 'dashboard/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Gráficos do Jogador" %} | Track my Foot{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="mb-4 text-center">{% trans "Gráficos de Desempenho" %} - {{ atleta.username }}</h2>
+
+    {% if atleta.profile_photo %}
+      <div class="text-center mb-4">
+        <img src="{{ atleta.profile_photo.url }}" class="rounded-circle" style="max-width: 100px; max-height: 100px; object-fit: cover;"  alt="Foto de {{ atleta.username }}">
+      </div>
+    {% endif %}
+
+    <div class="grafico text-center mb-4">
+      <h5>{% trans "Gráfico Principal" %}</h5>
+      <img src="/static/dashboard/grafico_banco_{{ atleta.id }}.png" alt="{% trans 'Gráfico principal' %}" class="img-fluid rounded shadow-sm" title="{% trans 'Mostra a soma dos valores antes e depois por data registrada.' %}">
+      <p class="text-muted small">{% trans "Permite observar a evolução geral do desempenho do jogador ao longo do tempo." %}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 text-center">
+        <h6>{% trans "Antes e Depois" %}</h6>
+        <img src="/static/dashboard/grafico_before_after_{{ atleta.id }}.png" alt="{% trans 'Antes e Depois' %}" class="img-fluid rounded shadow-sm" title="{% trans 'Comparação entre o desempenho antes e depois em cada métrica.' %}">
+        <p class="text-muted small">{% trans "Analisa se houve melhora ou piora após treinos ou competições." %}</p>
+      </div>
+      <div class="col-md-6 text-center">
+        <h6>{% trans "Mapa de Calor" %}</h6>
+        <img src="/static/dashboard/grafico_heatmap_{{ atleta.id }}.png" alt="{% trans 'Mapa de Calor' %}" class="img-fluid rounded shadow-sm" title="{% trans 'Representa visualmente os valores finais ao longo do tempo para cada métrica.' %}">
+        <p class="text-muted small">{% trans "Ajuda a identificar padrões de evolução ou estagnação por data." %}</p>
+      </div>
+      <div class="col-md-6 text-center">
+        <h6>{% trans "Uso das Pernas" %}</h6>
+        <img src="/static/dashboard/grafico_leg_use_{{ atleta.id }}.png" alt="{% trans 'Uso das Pernas' %}" class="img-fluid rounded shadow-sm" title="{% trans 'Distribuição do uso das pernas direita e esquerda.' %}">
+        <p class="text-muted small">{% trans "Revela se o jogador tem preferência ou equilíbrio entre as pernas." %}</p>
+      </div>
+      <div class="col-md-6 text-center">
+        <h6>{% trans "Radar de Performance" %}</h6>
+        <img src="/static/dashboard/grafico_radar_{{ atleta.id }}.png" alt="{% trans 'Radar de Performance' %}" class="img-fluid rounded shadow-sm" title="{% trans 'Apresenta a média final das métricas em formato radar.' %}">
+        <p class="text-muted small">{% trans "Fornece uma visão global dos pontos fortes e fracos do atleta." %}</p>
+      </div>
+    </div>
+
+    <div class="mt-5 text-center">
+      <p class="lead">❤️ {% trans "Total de curtidas" %}: {{ total_curtidas }}</p>
+      {% if not ja_curtiu and user.id != atleta.id %}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="curtir" class="btn btn-outline-success">{% trans "Curtir este desempenho" %}</button>
+        </form>
+      {% endif %}
+    </div>
+
+    {% if user.id == atleta.id %}
+      <div class="text-center mt-4">
+        <a href="{% url 'compartilhar_graficos' %}" class="btn btn-outline-primary">
+          🔗 {% trans "Gerar link compartilhável" %}
+        </a>
+      </div>
+    {% endif %}
+
+    {% if user.user_type == 'coach' %}
+      <div class="mt-5">
+        <h4>{% trans "Deixe uma mensagem para o atleta" %}</h4>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="mensagem_submit" value="1">
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary mt-2">{% trans "Salvar Mensagem" %}</button>
+        </form>
+      </div>
+    {% elif user.user_type == 'athlete' and mensagem %}
+      <div class="mt-5">
+        <h4>{% trans "Mensagem do Técnico" %}</h4>
+        <div class="alert alert-info">
+          <p><strong>{% trans "Mensagem de" %}:</strong> {{ mensagem.tecnico.username }}</p>
+          <p><strong>{% trans "Enviada em" %}:</strong> {{ mensagem.data_envio|date:"d/m/Y H:i" }}</p>
+          <hr>
+          <p>{{ mensagem.texto }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <a href="/buscar-jogadores/?posicao={{ request.GET.posicao }}" class="btn btn-secondary">{% trans "Voltar" %}</a>
+    </div>
+  </div>
+{% endblock %}

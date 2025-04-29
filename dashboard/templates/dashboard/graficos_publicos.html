@@ -1,0 +1,60 @@
+{% extends 'dashboard/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Desempenho Público" %} | Track My Foot{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-center mb-4">{% trans "Gráficos de Desempenho" %} - {{ atleta.username }}</h2>
+
+  {% if atleta.profile_photo %}
+    <div class="text-center mb-3">
+      <img src="{{ atleta.profile_photo.url }}" class="rounded-circle" style="max-width: 100px; max-height: 100px; object-fit: cover;" >
+    </div>
+  {% endif %}
+
+  <div class="text-center mb-4">
+    <button onclick="copiarLink()" class="btn btn-outline-success">📋 {% trans "Copiar link" %}</button>
+  </div>
+
+  <div class="grafico text-center mb-4">
+    <h5>{% trans "Gráfico Principal" %}</h5>
+    <img src="/static/dashboard/grafico_banco_{{ atleta.id }}.png" class="img-fluid rounded shadow-sm">
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 text-center">
+      <h6>{% trans "Antes e Depois" %}</h6>
+      <img src="/static/dashboard/grafico_before_after_{{ atleta.id }}.png" class="img-fluid rounded shadow-sm">
+    </div>
+    <div class="col-md-6 text-center">
+      <h6>{% trans "Mapa de Calor" %}</h6>
+      <img src="/static/dashboard/grafico_heatmap_{{ atleta.id }}.png" class="img-fluid rounded shadow-sm">
+    </div>
+    <div class="col-md-6 text-center">
+      <h6>{% trans "Uso das Pernas" %}</h6>
+      <img src="/static/dashboard/grafico_leg_use_{{ atleta.id }}.png" class="img-fluid rounded shadow-sm">
+    </div>
+    <div class="col-md-6 text-center">
+      <h6>{% trans "Radar de Performance" %}</h6>
+      <img src="/static/dashboard/grafico_radar_{{ atleta.id }}.png" class="img-fluid rounded shadow-sm">
+    </div>
+  </div>
+
+  <div class="mt-5 text-center">
+    <p class="lead">❤️ {% trans "Total de curtidas" %}: {{ total_curtidas }}</p>
+  </div>
+</div>
+
+<script>
+function copiarLink() {
+  const dummy = document.createElement('input');
+  document.body.appendChild(dummy);
+  dummy.value = window.location.href;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
+  alert("{% trans 'Link copiado para a área de transferência!' %}");
+}
+</script>
+{% endblock %}

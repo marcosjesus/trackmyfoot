@@ -1,0 +1,85 @@
+{% extends 'dashboard/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Track my Foot" %}{% endblock %}
+
+{% block content %}
+
+  <!-- Seção de Busca por Posição (movida para o topo, visível apenas para técnicos) -->
+  {% if user.is_authenticated and user.user_type == 'coach' %}
+    <div class="bg-white py-3 border-bottom">
+      <div class="container">
+        <form method="get" action="/buscar-jogadores/" class="d-flex flex-wrap align-items-center justify-content-center gap-3">
+          <label for="posicao" class="form-label fw-semibold m-0">{% trans "Buscar jogadores por posição:" %}</label>
+          <select name="posicao" id="posicao" class="form-select w-auto">
+            <option value="">{% trans "-- Selecione uma posição --" %}</option>
+            <option value="Goleiro">{% trans "Goleiro" %}</option>
+            <option value="Zagueiro">{% trans "Zagueiro" %}</option>
+            <option value="Lateral">{% trans "Lateral" %}</option>
+            <option value="Meio-campista">{% trans "Meio-campista" %}</option>
+            <option value="Atacante">{% trans "Atacante" %}</option>
+          </select>
+          <button type="submit" class="btn btn-primary">{% trans "Buscar" %}</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Apresentação e Benefícios -->
+  <div class="container py-5">
+    <div class="row text-center mb-5">
+      <div class="col">
+        <h2 class="fw-bold">{% trans "Por que escolher o Track my Foot?" %}</h2>
+        <p class="text-muted">{% trans "Uma plataforma que transforma dados em decisões para captação e gestão de talentos esportivos." %}</p>
+      </div>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm bg-white">
+          <h5 class="fw-bold">{% trans "Captação de Talentos" %}</h5>
+          <p>{% trans "Identifique jogadores com maior potencial usando dados objetivos e confiáveis." %}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm bg-white">
+          <h5 class="fw-bold">{% trans "Análise Visual" %}</h5>
+          <p>{% trans "Acompanhe o desenvolvimento técnico e físico de cada atleta com gráficos claros e precisos." %}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm bg-white">
+          <h5 class="fw-bold">{% trans "Planejamento Inteligente" %}</h5>
+          <p>{% trans "Tome decisões com base em dados reais para treinos, seleções e formação de equipes." %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exemplos de Gráficos -->
+  <div class="container py-5">
+    <div class="row text-center mb-4">
+      <div class="col">
+        <h3 class="fw-bold">{% trans "Exemplos de Gráficos" %}</h3>
+        <p class="text-muted">{% trans "Visualizações intuitivas para facilitar a avaliação de desempenho dos jogadores." %}</p>
+      </div>
+    </div>
+    <div class="row text-center g-4">
+      <div class="col-md-3">
+        <img src="/static/dashboard/grafico_banco_1.png" class="img-fluid rounded shadow-sm mb-2" alt="{% trans 'Gráfico Geral' %}">
+        <p><strong>{% trans "Gráfico Geral" %}</strong></p>
+      </div>
+      <div class="col-md-3">
+        <img src="/static/dashboard/grafico_before_after_1.png" class="img-fluid rounded shadow-sm mb-2" alt="{% trans 'Antes e Depois' %}">
+        <p><strong>{% trans "Antes e Depois" %}</strong></p>
+      </div>
+      <div class="col-md-3">
+        <img src="/static/dashboard/grafico_heatmap_1.png" class="img-fluid rounded shadow-sm mb-2" alt="{% trans 'Mapa de Calor' %}">
+        <p><strong>{% trans "Mapa de Calor" %}</strong></p>
+      </div>
+      <div class="col-md-3">
+        <img src="/static/dashboard/grafico_leg_use_1.png" class="img-fluid rounded shadow-sm mb-2" alt="{% trans 'Uso das Pernas' %}">
+        <p><strong>{% trans "Uso das Pernas" %}</strong></p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

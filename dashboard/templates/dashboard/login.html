@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %}
+{% load form_tags i18n %}
+
+{% block title %}Login | Track My Foot{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">{% trans "Entrar na Conta" %}</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="username" class="form-label">{% trans "Usuário" %}</label>
+          {{ form.username|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">{% trans "Senha" %}</label>
+          {{ form.password|add_class:"form-control" }}
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">{% trans "Entrar" %}</button>
+        </div>
+      </form>
+      <p class="text-center mt-3">{% trans "Ainda não tem uma conta?" %} <a href="{% url 'signup' %}">{% trans "Cadastre-se" %}</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

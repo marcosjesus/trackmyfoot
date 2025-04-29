@@ -1,0 +1,88 @@
+{% extends 'dashboard/base.html' %}
+{% load form_tags i18n %}
+
+{% block title %}{% trans "Criar Conta" %} | Track my Foot{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="signup-box">
+      <h2 class="text-center">📝 {% trans "Criar Conta" %}</h2>
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="id_username" class="form-label">{% trans "Nome de usuário" %}</label>
+          {{ form.username|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_email" class="form-label">{% trans "Email" %}</label>
+          {{ form.email|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_password" class="form-label">{% trans "Senha" %}</label>
+          {{ form.password|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_user_type" class="form-label">{% trans "Tipo de usuário" %}</label>
+          {{ form.user_type|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3" id="position-field" style="display: none;">
+          <label for="id_position" class="form-label">{% trans "Posição" %}</label>
+          {{ form.position|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_gender" class="form-label">{% trans "Gênero" %}</label>
+          {{ form.gender|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_date_of_birth" class="form-label">{% trans "Data de nascimento" %}</label>
+          {{ form.date_of_birth|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_city" class="form-label">{% trans "Cidade" %}</label>
+          {{ form.city|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_state" class="form-label">{% trans "Estado" %}</label>
+          {{ form.state|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_profile_photo" class="form-label">{% trans "Foto de rosto" %}</label>
+          {{ form.profile_photo|add_class:"form-control" }}
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success">{% trans "Criar Conta" %}</button>
+        </div>
+      </form>
+      <p class="text-center mt-3">{% trans "Já tem uma conta?" %} <a href="{% url 'login' %}">{% trans "Login" %}</a></p>
+    </div>
+  </div>
+
+  <script>
+    const userTypeSelect = document.getElementById("id_user_type");
+    const positionField = document.getElementById("position-field");
+
+    function togglePositionField() {
+      if (userTypeSelect.value === "athlete") {
+        positionField.style.display = "block";
+      } else {
+        positionField.style.display = "none";
+      }
+    }
+
+    if (userTypeSelect) {
+      userTypeSelect.addEventListener("change", togglePositionField);
+      window.addEventListener("DOMContentLoaded", togglePositionField);
+    }
+  </script>
+{% endblock %}

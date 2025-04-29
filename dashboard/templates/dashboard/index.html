@@ -1,0 +1,53 @@
+{% extends 'dashboard/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Upload de Arquivos" %} | Track my Foot{% endblock %}
+
+{% block content %}
+  <div class="container py-5">
+    <h2 class="text-center mb-4">{% trans "Processar Arquivos PDF" %}</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Fechar' %}"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" id="upload-form">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="pdf_file" class="form-label">{% trans "Escolha um ou mais arquivos PDF:" %}</label>
+            <input type="file" class="form-control" name="pdf_file" id="pdf_file" multiple required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success" id="process-btn">
+              <span id="btn-text">{% trans "Processar Arquivos" %}</span>
+              <span id="btn-spinner" class="spinner-border spinner-border-sm d-none ms-2" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+
+        <div class="text-center mt-4">
+          <a href="/" class="btn btn-outline-secondary btn-sm">{% trans "Voltar" %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const btn = document.getElementById("process-btn");
+    const btnText = document.getElementById("btn-text");
+    const btnSpinner = document.getElementById("btn-spinner");
+
+    form.addEventListener("submit", function () {
+      btn.disabled = true;
+      btnText.textContent = "{{ _('Processando...') }}";
+      btnSpinner.classList.remove("d-none");
+    });
+  </script>
+{% endblock %}

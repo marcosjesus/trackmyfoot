@@ -1,0 +1,129 @@
+{% extends 'dashboard/base.html' %}
+{% load static i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{% trans "Buscar Jogadores" %}</h2>
+    <form method="get" class="row justify-content-center mb-4">
+        <div class="col-md-2 mb-2">
+            <select name="posicao" class="form-control">
+                <option value="">{% trans "Todas as posições" %}</option>
+                <option value="Goleiro" {% if request.GET.posicao == 'Goleiro' %}selected{% endif %}>{% trans "Goleiro" %}</option>
+                <option value="Zagueiro" {% if request.GET.posicao == 'Zagueiro' %}selected{% endif %}>{% trans "Zagueiro" %}</option>
+                <option value="Lateral" {% if request.GET.posicao == 'Lateral' %}selected{% endif %}>{% trans "Lateral" %}</option>
+                <option value="Meio-campista" {% if request.GET.posicao == 'Meio-campista' %}selected{% endif %}>{% trans "Meio-campista" %}</option>
+                <option value="Atacante" {% if request.GET.posicao == 'Atacante' %}selected{% endif %}>{% trans "Atacante" %}</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="text" name="cidade" class="form-control" placeholder="{% trans 'Cidade' %}" value="{{ request.GET.cidade }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="text" name="estado" class="form-control" placeholder="{% trans 'Estado' %}" value="{{ request.GET.estado }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <select name="genero" class="form-control">
+                <option value="">{% trans "Gênero" %}</option>
+                <option value="Masculino" {% if request.GET.genero == 'Masculino' %}selected{% endif %}>{% trans "Masculino" %}</option>
+                <option value="Feminino" {% if request.GET.genero == 'Feminino' %}selected{% endif %}>{% trans "Feminino" %}</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="number" name="ano_nascimento" class="form-control" placeholder="{% trans 'Ano de Nascimento' %}" value="{{ request.GET.ano_nascimento }}">
+        </div>
+        <div class="col-md-2 mb-2">
+            <button type="submit" class="btn btn-primary w-100">{% trans "Buscar" %}</button>
+        </div>
+    </form>
+    
+
+    {% if favoritos %}
+    <div class="mb-4">
+        <h4>{% trans "Favoritos" %}</h4>
+        <div class="row">
+            {% for favorito in favoritos %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    {% if favorito.atleta.profile_photo %}
+                    <img src="{{ favorito.atleta.profile_photo.url }}" class="rounded-circle" style="max-width: 100px; max-height: 100px; object-fit: cover;"  alt="Foto do atleta">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ favorito.atleta.username }}</h5>
+                        <p class="card-text">{{ favorito.atleta.position }}</p>
+                        <p class="card-text">{{ favorito.atleta.city }} - {{ favorito.atleta.state }}</p>
+                        <p class="card-text">
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% if LANGUAGE_CODE == 'en' %}
+                                {{ favorito.atleta.birth_date|date:"m/d/Y" }}
+                            {% else %}
+                                {{ favorito.atleta.birth_date|date:"d/m/Y" }}
+                            {% endif %}
+                        </p>
+                        <p class="card-text">{% trans "Curtidas" %}: {{ favorito.atleta.curtida_set.count }}</p>
+                        <a href="{% url 'ver_graficos' favorito.atleta.id %}" class="btn btn-sm btn-info">📊 {% trans "Ver Gráficos" %}</a>
+                        <a href="{% url 'remover_favorito' favorito.atleta.id %}?posicao={{ request.GET.posicao }}" class="btn btn-sm btn-danger mt-2">❌ {% trans "Remover Favorito" %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for atleta in atletas %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                {% if atleta.profile_photo %}
+                <img src="{{ atleta.profile_photo.url }}" class="rounded-circle" style="max-width: 100px; max-height: 100px; object-fit: cover;"  alt="Foto do atleta">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ atleta.username }}</h5>
+                    <p class="card-text">{{ atleta.position }}</p>
+                    <p class="card-text">{{ atleta.city }} - {{ atleta.state }}</p>
+                    <p class="card-text">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% if LANGUAGE_CODE == 'en' %}
+                            {{ atleta.birth_date|date:"m/d/Y" }}
+                        {% else %}
+                            {{ atleta.birth_date|date:"d/m/Y" }}
+                        {% endif %}
+                    </p>
+                    <p class="card-text">{% trans "Curtidas" %}: {{ atleta.curtida_set.count }}</p>
+                    <a href="{% url 'ver_graficos' atleta.id %}" class="btn btn-sm btn-info">📊 {% trans "Ver Gráficos" %}</a>
+                    {% if atleta.id in favoritos_ids %}
+                        <a href="{% url 'remover_favorito' atleta.id %}?posicao={{ request.GET.posicao }}" class="btn btn-sm btn-danger mt-2">❌ {% trans "Remover Favorito" %}</a>
+                    {% else %}
+                        <a href="{% url 'favoritar_atleta' atleta.id %}?posicao={{ request.GET.posicao }}" class="btn btn-sm btn-outline-warning mt-2">⭐ {% trans "Favoritar" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if atletas.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ atletas.previous_page_number }}&posicao={{ request.GET.posicao }}">{% trans "Anterior" %}</a>
+                </li>
+                {% endif %}
+
+                {% for num in atletas.paginator.page_range %}
+                <li class="page-item {% if atletas.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&posicao={{ request.GET.posicao }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+
+                {% if atletas.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ atletas.next_page_number }}&posicao={{ request.GET.posicao }}">Próxima</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
