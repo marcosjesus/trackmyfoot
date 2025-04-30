@@ -8,11 +8,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 AUTH_USER_MODEL = 'dashboard.CustomUser'
 
-SECRET_KEY = 'replace-this-with-a-secure-key'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS =  os.getenv('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS =  os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 LANGUAGE_CODE = 'pt'
 
@@ -85,11 +85,10 @@ DATABASES = {
 #    }
 #}
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = False
+USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dashboard/static')]
@@ -112,3 +111,8 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
+# Segurança para produção
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
