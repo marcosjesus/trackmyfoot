@@ -67,6 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'playertracker_project.wsgi.application'
 
+
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE'),
@@ -77,6 +78,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
+
 
 #DATABASES = {
 #    'default': {
