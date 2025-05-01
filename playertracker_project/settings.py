@@ -12,7 +12,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS =  os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'www.trackmyfoot.com', 'trackmyfoot.com', '3.22.27.69']
+
 
 LANGUAGE_CODE = 'pt'
 
