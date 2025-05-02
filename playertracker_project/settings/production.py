@@ -12,7 +12,8 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
-            'options': '-c timezone=UTC'
+            'options': '-c timezone=UTC',
+        'CONN_MAX_AGE': 0  # <- força reconexão a cada request
         }
     }
 }
