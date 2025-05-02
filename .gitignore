@@ -3,8 +3,7 @@ venv/
 ENV/
 
 # Arquivos de configuração locais
-*.env
-echo ".env" >> .gitignore
+.env
 
 # Arquivos de cache do Python
 __pycache__/
@@ -35,5 +34,5 @@ Thumbs.db
 # Pastas estáticas geradas
 staticfiles/
 
-# configuracoes do ambiente local
+# Configurações do ambiente local
 playertracker_project/settings/local.py
