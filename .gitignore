@@ -33,3 +33,6 @@ Thumbs.db
 
 # Pastas estáticas geradas
 staticfiles/
+
+# configuracoes do ambiente local
+playertracker_project/settings/local.py
