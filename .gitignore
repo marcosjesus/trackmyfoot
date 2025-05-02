@@ -4,6 +4,7 @@ ENV/
 
 # Arquivos de configuração locais
 *.env
+echo ".env" >> .gitignore
 
 # Arquivos de cache do Python
 __pycache__/
