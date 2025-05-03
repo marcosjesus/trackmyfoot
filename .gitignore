@@ -40,3 +40,6 @@ playertracker_project/settings/local.py
 manage.py
 
 wsgi.py
+
+*.pyc
+__pycache__/
