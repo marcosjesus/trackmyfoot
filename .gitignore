@@ -36,3 +36,7 @@ staticfiles/
 
 # Configurações do ambiente local
 playertracker_project/settings/local.py
+
+manage.py
+
+wsgi.py
