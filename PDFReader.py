@@ -32,7 +32,7 @@ def extract_values_with_context(pdf_path):
             text = page.extract_text()
             if not text:
                 continue
-            
+          
             first_line = text.strip().split('\n')[0]
             
             if 'MATCH' in first_line.upper():
@@ -77,6 +77,8 @@ def extract_values_with_context(pdf_path):
                 for match in matches:
                     value_before, value_after = match
                     values.append((keyword_obj.id, value_before, value_after, keyword_obj.description))
+            
+          
 
     return values, date_str, playing_time, start_time, duration, activity_type
 
@@ -88,9 +90,10 @@ def process_pdfs_in_folder(folder_path, user):
             values, date_str, playing_time, start_time, duration, activity_type = extract_values_with_context(pdf_path)
             
             session_number = get_next_session_number(user, date_str, activity_type)
-
+            
             for keyword_id, value_before, value_after, description in values:
                 try:
+                    
     
                     salvar_pdfdata_sql(
                         user.id, description,

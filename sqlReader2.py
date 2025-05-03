@@ -13,7 +13,7 @@ def salvar_pdfdata_sql(user_id, description, value_before, value_after, date, pl
                     user_id, description, value_before, value_after, date, playing_time, start_time, duration
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ''', [user_id, description, value_before, value_after, date, playing_time, start_time, duration])
-            print(f"[SQL] Insert: {user_id}, {description}, {value_before}, {value_after}, {date}")
+           
         except Exception as e:
             print(f"Erro ao gravar: {e}")
 

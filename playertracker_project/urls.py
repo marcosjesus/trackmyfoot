@@ -7,9 +7,26 @@ from dashboard.authviews import login_view, signup_view, logout_view
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language
 
-# ✅ Deixe FORA do i18n_patterns
+# SEO
+from django.contrib.sitemaps.views import sitemap
+from dashboard.sitemaps import AthleteSitemap
+from django.http import HttpResponse
+
+# Sitemap registry
+sitemaps = {
+    'atletas': AthleteSitemap,
+}
+
+# ✅ Fora do i18n_patterns
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
+
+    # SEO: sitemap.xml e robots.txt
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('robots.txt', lambda r: HttpResponse(
+        "User-Agent: *\nDisallow:\nSitemap: https://www.trackmyfoot.com/sitemap.xml",
+        content_type="text/plain"
+    )),
 ]
 
 urlpatterns += i18n_patterns(

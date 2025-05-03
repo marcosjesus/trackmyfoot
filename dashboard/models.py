@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 import uuid
+from django.utils import timezone
+from django.utils.text import slugify
 
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -25,7 +27,19 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.get_user_type_display()})"
 
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug and self.user_type == 'athlete':
+            base_slug = slugify(self.username)
+            count = 1
+            slug = base_slug
+            while CustomUser.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{count}"
+                count += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+        
 class PDFKeyword(models.Model):
     description = models.CharField(max_length=255, unique=True)
     pattern = models.TextField(blank=True, null=True)
@@ -105,3 +119,13 @@ class Favorito(models.Model):
 
     def __str__(self):
         return f"{self.tecnico} favoritou {self.atleta}"
+    
+class PDFProcessLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    filename = models.CharField(max_length=255)
+    processed_at = models.DateTimeField(default=timezone.now)
+    success = models.BooleanField(default=False)
+    error_message = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.filename} - {'Sucesso' if self.success else 'Erro'}"

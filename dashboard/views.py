@@ -10,10 +10,11 @@ from PDFReader import process_pdfs_in_folder as reader1_process
 from PDFReader2 import process_pdfs_in_folder as reader2_process
 from UniqueFile import combine_csv_files
 from dashboard.utils import gerar_grafico_banco, gerar_grafico_before_after, gerar_grafico_heatmap, gerar_grafico_leg_use, gerar_grafico_radar
-from .models import PDFData, MensagemTecnico, Curtida, GraficoCompartilhado, Favorito
+from .models import PDFData, MensagemTecnico, Curtida, GraficoCompartilhado, Favorito, PDFProcessLog
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.utils.translation import get_language
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -81,6 +82,7 @@ def meu_perfil_view(request):
     return render(request, 'dashboard/meu_perfil.html', {'form': form})
 
 # View protegida para upload
+
 @login_required
 def index(request):
     if request.method == 'POST':
@@ -90,15 +92,36 @@ def index(request):
             upload_path = os.path.join(settings.MEDIA_ROOT, 'uploads')
             os.makedirs(upload_path, exist_ok=True)
 
+            # Salvar logs antes de processar
+            logs = []
             for file in files:
+                if PDFProcessLog.objects.filter(user=request.user, filename=file.name, success=True).exists():
+                    messages.warning(request, f'O arquivo "{file.name}" já foi processado com sucesso anteriormente.')
+                    continue
+
                 unique_filename = f"{uuid.uuid4()}.pdf"
                 pdf_path = os.path.join(upload_path, unique_filename)
                 with open(pdf_path, 'wb+') as destination:
                     for chunk in file.chunks():
                         destination.write(chunk)
-          
+
+                log = PDFProcessLog.objects.create(
+                    user=request.user,
+                    filename=file.name,
+                    success=True,
+                    processed_at=timezone.now()
+                )
+                logs.append((log, pdf_path))
+
+            # Processamento
             reader1_process(upload_path, request.user)
             reader2_process(upload_path, request.user)
+
+            # Atualiza logs após o processamento
+            for log, path in logs:
+                if os.path.exists(path.replace('.pdf', '.csv')):  # verificação básica
+                    log.status = 'sucesso'
+                log.save()
 
             graph_paths = [
                 gerar_grafico_banco(request.user, tipo=None),
@@ -117,7 +140,7 @@ def index(request):
                     final_img = os.path.join(static_dir, os.path.basename(path))
                     final_images.append(os.path.basename(final_img))
                 else:
-                    print(f"Arquivo não encontrado: {path}")
+                    print(f"Arquivo não encontrado1: {path}")
 
             for filename in os.listdir(upload_path):
                 if filename.endswith('.csv') or filename.endswith('.pdf'):
@@ -130,7 +153,10 @@ def index(request):
                 return redirect('index')
     else:
         form = UploadPDFForm()
-    return render(request, 'dashboard/index.html', {'form': form})
+
+    # Recupera os arquivos processados pelo usuário para exibir na tabela
+    logs = PDFProcessLog.objects.filter(user=request.user).order_by('-processed_at')
+    return render(request, 'dashboard/index.html', {'form': form, 'logs': logs})
 
 @login_required
 def result(request, filename):
@@ -252,3 +278,6 @@ def perguntas_frequentes_view(request):
     return render(request, 'dashboard/perguntas_frequentes.html')
 
 
+def athlete_profile(request, slug):
+    jogador = get_object_or_404(User, slug=slug, user_type='athlete')
+    return render(request, 'athlete_profile.html', {'jogador': jogador})

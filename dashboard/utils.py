@@ -11,6 +11,7 @@ UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'dashboard', 'static', 'dashboar
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def gerar_grafico_banco(user, tipo=None):
+
     df = pd.DataFrame.from_records(
         PDFData.objects.filter(user=user).values(
             'description', 'value_before', 'value_after', 'date'
@@ -43,6 +44,8 @@ def gerar_grafico_banco(user, tipo=None):
         plt.tight_layout()
         filename = f'grafico_banco_{user.id}.png'
         output_path = os.path.join(settings.BASE_DIR, 'dashboard', 'static', 'dashboard', filename)
+      
+
         plt.savefig(output_path)
         
         plt.close()

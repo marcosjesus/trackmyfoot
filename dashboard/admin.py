@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .models import PDFData, PDFKeyword
-
+from .models import PDFProcessLog
 User = get_user_model()
 
 @admin.register(User)
@@ -30,3 +30,12 @@ class PDFDataAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'description')
     list_filter = ('user', 'date')
     list_per_page = 25
+
+
+
+
+@admin.register(PDFProcessLog)
+class PDFProcessLog(admin.ModelAdmin):
+    list_display = ('filename', 'user', 'success', 'processed_at', 'error_message')
+    list_filter = ('success', 'processed_at')
+    search_fields = ('filename', 'user__username')

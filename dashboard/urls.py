@@ -25,4 +25,5 @@ urlpatterns = [
     path('como-funciona/', views.como_funciona_view, name='como_funciona'),
     path('passo-a-passo/', views.passo_a_passo_view, name='passo_a_passo'),
     path('perguntas-frequentes/', views.perguntas_frequentes_view, name='perguntas_frequentes'),
+    path('atleta/<slug:slug>/', views.athlete_profile, name='athlete_profile'),
 ]

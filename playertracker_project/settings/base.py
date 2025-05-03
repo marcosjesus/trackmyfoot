@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+
 
 AUTH_USER_MODEL = 'dashboard.CustomUser'
 
@@ -27,6 +28,7 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 INSTALLED_APPS = [
     'dashboard',
+    'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

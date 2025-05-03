@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ jogador.username }}{% endblock %}
+{% block description %}Veja o desempenho e estatísticas do atleta {{ jogador.username }} em campo.{% endblock %}
+{% block og_title %}Perfil de {{ jogador.username }}{% endblock %}
+{% block og_description %}Atleta {{ jogador.username }} – {{ jogador.position }} de {{ jogador.city }}, {{ jogador.state }}.{% endblock %}
+{% block og_image %}
+  {% if jogador.profile_photo %}
+    {{ jogador.profile_photo.url }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1>{{ jogador.username }}</h1>
+  <p>Posição: {{ jogador.position }}</p>
+  <p>Cidade: {{ jogador.city }} - {{ jogador.state }}</p>
+  <p>Gênero: {{ jogador.get_gender_display }}</p>
+  <p>Data de nascimento: {{ jogador.date_of_birth }}</p>
+  <img src="{{ jogador.profile_photo.url }}" alt="Foto do jogador" width="200px">
+{% endblock %}
