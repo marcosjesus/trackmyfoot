@@ -12,6 +12,15 @@ from django.contrib.sitemaps.views import sitemap
 from dashboard.sitemaps import AthleteSitemap
 from django.http import HttpResponse
 
+from django.http import FileResponse
+from django.conf import settings
+import os
+
+def serve_verify_js(request):
+    path = os.path.join(settings.BASE_DIR, 'static', 'sw.js')  # use o nome real do seu arquivo
+    return FileResponse(open(path, 'rb'), content_type='application/javascript')
+
+
 # Sitemap registry
 sitemaps = {
     'atletas': AthleteSitemap,
@@ -30,6 +39,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
+    path('sw.js', serve_verify_js),
     path('admin/', admin.site.urls),
     path('', include('dashboard.urls')),
     path('', views.landing_view, name='landing'),
